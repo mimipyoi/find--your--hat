@@ -21,7 +21,7 @@
 // step 1.5 : else is place with fieldCharacter
 
 // step 2 : how to make path move
-// step 2.1 : prompt that keep taking U D L R ? (i like wasd more but don't know if requiredment state this)
+// step 2.1 : prompt that keep taking W A S D ? (I love WASD so just let i be)
 // step 2.2 : something that keep looping to move field[0][0] = pathCharacter or something to else
 // step 2.3 : something that check what is on that space now
 // step 2.4 : exit condition 
@@ -45,8 +45,10 @@ class Field {
     this.positionY = 0;
     // Set the "home" position before the game starts
     this.field[0][0] = pathCharacter;
+    this.notDead = true;
   }
 
+  //field generator is ok and tested
   static generateField(width, height, percentage = 0.3) {
     //1.1
     let field = new Array(height);
@@ -70,24 +72,62 @@ class Field {
 
   //print field method to make it eaier 
   print() {
-    clear();
+    clear(); 
     // your print map code here
-    let lineDisplay = '';
-    for (i = 0; i < field.length; i++){
-      lineDisplay = '';
-      for (j = 0; j < field[0].length; j++){
-        lineDisplay.join(field[i][j])
       }
-      console.log(lineDisplay);
-    }
-  }
+  
 
   // the rest of your code starts here.
-  
 
+  move(direction) {
 
-  
+    // move hero
+    direction = direction.toLowerCase()
+    if (direction === 'w') this.positionY -= 1;
+    else if (direction === 'a') this.positionX -= 1;
+    else if (direction === 's') this.positionY += 1;
+    else if (direction === 'd') this.positionX += 1;
+    else return 0;
+
+    // check if out of bound
+    if (this.positionX < 0 || this.positionX >= this.field[0].length || this.positionY < 0 || this.positionY >= this.field.length ){
+      this.notDead = false;
+      console.log('Sadly but you jump out from stage!')
+      return 0;
+    }
+
+    //check if it is hole
+    if (this.field[this.positionY][this.positionX] === hole){
+      this.notDead = false;
+      console.log('You jump in to the hole!!')
+      return 0;
+    }
+
+    //check if it is hat
+    if (this.field[this.positionY][this.positionX] === hat){
+      this.notDead = false;
+      console.log('You found the hat, YOU WIN!!')
+      return 0;
+    }
+
+    if (this.field[this.positionY][this.positionX] === fieldCharacter) this.field[this.positionY][this.positionX] = pathCharacter;
+  }
+
+  play() {
+    this.notDead = true; 
+    while(this.notDead){
+      this.print()
+      /* console.log(playField) */
+      const direction = prompt ('Type W A S D and enter to move : ');
+      this.move(direction)
+  }
 }
 
+}
+
+
+let playField = new Field(Field.generateField(10,10));
+/* console.log(playField) */
+playField.play()
 
 
